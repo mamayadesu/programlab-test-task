@@ -1,5 +1,18 @@
+@font-face {
+    font-family: 'Ramona';
+    src: url('/static/fonts/ramona.ttf');
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: 'Ramona';
+    src: url('/static/fonts/ramona_light.ttf');
+    font-weight: normal;
+}
+
 body {
     background-color: white;
+    font-family: Ramona, serif;
 }
 
 .feedback-form__container {
@@ -34,6 +47,14 @@ body {
     width: 80%;
     margin-left: auto;
     margin-right: auto;
+}
+
+.feedback-form select {
+    font-family: Ramona, serif;
+}
+
+.feedback-form select option {
+    font-family: Ramona, serif;
 }
 
 .feedback-form__field {
@@ -91,4 +112,30 @@ body {
     width: 150%;
     padding-top: 6px;
     padding-bottom: 6px;
+    font-family: Ramona, serif;
+}
+
+.feedback-form__captcha-image {
+    width: 400px;
+    border: 2px solid black;
+    margin-bottom: 4px;
+}
+
+.feedback-form__captcha {
+    display: flex;
+    flex-direction: row;
+}
+
+.feedback-form__captcha-update {
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: 12px;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+}
+
+.feedback-form__captcha-update-img {
+    width: 32px;
+    height: 32px;
 }

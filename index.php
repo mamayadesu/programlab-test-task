@@ -2,6 +2,13 @@
 
 define("ROOT_DIR", dirname(__FILE__));
 
+define("ALLOW_INCLUDE", true);
+
+if (!get_extension_funcs("gd"))
+{
+    die("Для работы формы обратной связи необходимо расширение GD");
+}
+
 require ROOT_DIR . "/backend/functions.php";
 ?>
 <html>
@@ -70,6 +77,19 @@ require ROOT_DIR . "/backend/functions.php";
                 <?php fieldStart("job") ?>
                     <?php label("Профессия") ?>
                     <input type="text" name="job" class="feedback-form__field-input">
+                <?php fieldEnd() ?>
+
+                <?php fieldStart("captcha") ?>
+                    <?php label("Число с картинки", true) ?>
+                    <div style="display: flex; flex-direction: row">
+                        <img src="" id="captcha_img" class="feedback-form__captcha-image">
+                        <div class="feedback-form__captcha-update" id="captcha-update-btn">
+                            <img src="/static/img/update.png" class="feedback-form__captcha-update-img">
+                        </div>
+                    </div>
+
+                    <input type="number" name="captcha" class="feedback-form__field-input">
+                    <?php errorFor("captcha") ?>
                 <?php fieldEnd() ?>
 
                 <div class="feedback-form__button-wrapper">

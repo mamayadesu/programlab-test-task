@@ -1,6 +1,6 @@
 <?php
 
-if (!defined("ROOT_DIR"))
+if (!defined("ALLOW_INCLUDE"))
 {
     exit;
 }
@@ -55,4 +55,16 @@ function fieldStart(string $fieldName) : void
 function fieldEnd() : void
 {
     echo "</div>";
+}
+
+function randColor($imgPng, ?int $red = null, ?int $green = null, ?int $blue = null)
+{
+    if ($red !== null && $green !== null && $blue !== null)
+    {
+        return imagecolorallocate($imgPng, $red, $green, $blue);
+    }
+    else
+    {
+        return imagecolorallocate($imgPng, rand(0, 255), rand(0, 255),rand(0, 255));
+    }
 }

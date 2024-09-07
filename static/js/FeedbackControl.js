@@ -13,17 +13,20 @@ class FeedbackControl
             "phone",
             "email",
             "organisation",
-            "job"
+            "job",
+            "captcha"
         ]
         this.required_fields = [
             "question_is_about",
             "question",
             "name",
             "phone",
-            "email"
+            "email",
+            "captcha"
         ];
-
+        this.lastCaptchaUpdate = 0;
         this.element.find("[name=phone]").mask("+7 (999) 999 99-99");
+        this.updateCaptcha(true);
         this.addEvents();
     }
 
@@ -40,28 +43,37 @@ class FeedbackControl
                 data[fieldName] = this.element.find("[name=" + fieldName + "]").val();
             });
 
-            var someFieldsAreUnfilled = false;
             this.required_fields.forEach(fieldName => {
                 if ((fieldName != "question_is_about" && data[fieldName].trim().length == 0) || (fieldName == "question_is_about" && data[fieldName] == null))
                 {
-                    someFieldsAreUnfilled = true;
-
                     var label = this.element.find("[data-field-name=" + fieldName + "]").find(".feedback-form__label").attr("data-label-value");
                     errors.push("Поле '" + label + "' обязательно для заполнения");
 
-                    this.setUnfilled(fieldName);
+                    this.setValidationError(fieldName);
                 }
                 else
                 {
 
-                    this.setUnfilled(fieldName, false);
+                    this.setValidationError(fieldName, false);
+                }
+            });
+
+            this.all_fields.forEach(fieldName => {
+                var fieldBlock = this.element.find("div [data-field-name=" + fieldName +"]");
+
+                var fieldLabel = fieldBlock.find("label").attr("data-label-value");
+
+                if (!this.validateField(fieldBlock.find("[name=" + fieldName +"]")[0]))
+                {
+                    this.setValidationError(fieldName, true, false);
+                    errors.push("Значение поля '" + fieldLabel +"' слишком длинное");
                 }
             });
 
             var $errorsBlock = this.element.find("#feedback-form-errors");
             var $errorsList = $errorsBlock.find(".feedback-form__badfields-list");
             $errorsList.html("");
-            if (someFieldsAreUnfilled)
+            if (errors.length > 0)
             {
                 errors.forEach(error => {
                     $errorsList.append("<li>" + error + "</li>");
@@ -73,13 +85,17 @@ class FeedbackControl
             $errorsList.html("");
             $errorsBlock.css({opacity: 0});
 
-            // ToDo
+
         }.bind(this));
 
+        el.find("#captcha-update-btn").on("click", function(ev) {
+            var el = $(ev.target);
 
+            this.updateCaptcha();
+        }.bind(this));
     }
 
-    setUnfilled(field, showError = true)
+    setValidationError(field, unfilled =true, showError = true)
     {
         var $field = this.element.find("div [data-field-name=" + field +"]");
         if ($field.length > 0)
@@ -88,7 +104,7 @@ class FeedbackControl
             var $label = $field.find('label');
             var $error_text = $field.find('.feedback-form__error');
 
-            if (showError)
+            if (unfilled)
             {
                 if (!$input.hasClass('error'))
                 {
@@ -98,7 +114,15 @@ class FeedbackControl
                 {
                     $label.addClass('error');
                 }
-                $error_text.animate({opacity: 1});
+
+                if (showError)
+                {
+                    $error_text.animate({opacity: 1});
+                }
+                else
+                {
+                    $error_text.css({opacity: 0});
+                }
             }
             else
             {
@@ -112,6 +136,46 @@ class FeedbackControl
                 }
                 $error_text.css({opacity: 0});
             }
+        }
+    }
+
+    updateCaptcha(force = false)
+    {
+        if (Math.floor((new Date).getTime() / 1000) - this.lastCaptchaUpdate <= 5 && !force)
+        {
+            return;
+        }
+        else
+        {
+            this.lastCaptchaUpdate = Math.floor((new Date).getTime() / 1000);
+        }
+
+        this.element.find("#captcha_img").attr("src", "/backend/captcha.php?v=" + Math.random());
+    }
+
+    validateField(node)
+    {
+        if (typeof node == "undefined")
+        {
+            return true;
+        }
+        var $element = $(node);
+
+        switch (node.localName)
+        {
+            case "textarea":
+                return $element.val().length <= 4096;
+
+            case "input":
+                if ($element.prop("type") == "text" || $element.prop("type") == "email" || $element.prop("type") == "number")
+                {
+                    var val = $element.val().toString();
+                    return val.length <= 255;
+                }
+                return true;
+
+            default:
+                return true;
         }
     }
 }
