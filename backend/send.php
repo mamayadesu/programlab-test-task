@@ -112,7 +112,7 @@ $headers = "From: admin@xrefcore.ru\r\n" .
     "Reply-To: admin@xrefcore.ru\r\n" .
     "X-Mailer: PHP/" . phpversion();
 
-$email_sending_result = @mail($email, "Ваш вопрос о " . getQuestionsList()[$question_is_about], $question_mail, $headers);
+$email_sending_result = @mail($email, "Ваш вопрос о " . getQuestionsList()[$question_is_about], $mail_body, $headers);
 
 if (!$email_sending_result)
 {
