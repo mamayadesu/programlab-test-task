@@ -125,7 +125,7 @@ $_SESSION["captcha"] = $number;
 
 header("Content-Type: image/png");
 
-$fonts = "overdozesans.ttf";
+$fonts = "./overdozesans.ttf";
 
 $fontSize = 24;
 $fontSizeFooter = 12;
