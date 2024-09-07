@@ -85,13 +85,41 @@ class FeedbackControl
             $errorsList.html("");
             $errorsBlock.css({opacity: 0});
 
+            $.post("/backend/send.php", data, function(response) {
+                if (response.success)
+                {
+                    window.alert("Успешно отправлено! Вы получите уведомление на почту");
+                    this.all_fields.forEach(fieldName => {
+                        var field = this.element.find("[name=" + fieldName + "]");
+                        if (fieldName == "question_is_about")
+                        {
+                            field.val("-1");
+                        }
+                        else
+                        {
+                            field.val("");
+                        }
+                    });
+                }
+                else
+                {
+                    window.alert(response.error);
+                }
 
+                this.updateCaptcha(true);
+            }.bind(this), "json");
         }.bind(this));
 
         el.find("#captcha-update-btn").on("click", function(ev) {
             var el = $(ev.target);
 
             this.updateCaptcha();
+        }.bind(this));
+
+        el.find("#agreement").on("change", function(ev) {
+            var el = $(ev.target);
+
+            this.element.find("#send").prop("disabled", !el.prop("checked"));
         }.bind(this));
     }
 
@@ -145,12 +173,14 @@ class FeedbackControl
         {
             return;
         }
-        else
+
+        if (!force)
         {
             this.lastCaptchaUpdate = Math.floor((new Date).getTime() / 1000);
         }
 
         this.element.find("#captcha_img").attr("src", "/backend/captcha.php?v=" + Math.random());
+        this.element.find("[name=captcha]").val("");
     }
 
     validateField(node)

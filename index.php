@@ -92,8 +92,13 @@ require ROOT_DIR . "/backend/functions.php";
                     <?php errorFor("captcha") ?>
                 <?php fieldEnd() ?>
 
+                <div style="display: flex; flex-direction: row-reverse; margin-top: 8px;">
+                    <label for="agreement" style="margin-left: 8px; flex: 1;">Я согласен на обработку персональных данных</label>
+                    <input type="checkbox" id="agreement">
+                </div>
+
                 <div class="feedback-form__button-wrapper">
-                    <button id="send" class="feedback-form__button">Отправить</button>
+                    <button id="send" class="feedback-form__button" disabled>Отправить</button>
                 </div>
             </div>
         </div>
