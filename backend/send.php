@@ -24,10 +24,11 @@ $organisation = $_POST["organisation"] ?? "";
 $job = $_POST["job"] ?? "";
 $captcha = $_POST["captcha"] ?? "";
 
-if ($captcha != $_SESSION["captcha"])
+if ($captcha != $_SESSION["captcha"] || $_SESSION["captcha"] == "" || $_SESSION["captcha"] == "nocaptcha")
 {
     $result["success"] = false;
     $result["error"] = "Проверочный код с картинки введён неверно";
+    $_SESSION["captcha"] = "nocaptcha";
     die(json_encode($result));
 }
 
@@ -60,7 +61,7 @@ if (strlen(trim($question)) == 0)
 
 if (strlen($email) > 255)
 {
-    $errors .= "E-Mail слишком длинное. ";
+    $errors .= "E-Mail слишком длинный. ";
 }
 
 if (strlen(trim($email)) == 0)

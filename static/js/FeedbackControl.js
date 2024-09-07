@@ -2,7 +2,6 @@ class FeedbackControl
 {
     constructor(nodeId)
     {
-        window.__FC = this;
         this.element = $(nodeId);
 
         this.all_fields = [
@@ -123,7 +122,7 @@ class FeedbackControl
         }.bind(this));
     }
 
-    setValidationError(field, unfilled =true, showError = true)
+    setValidationError(field, unfilled = true, showError = true)
     {
         var $field = this.element.find("div [data-field-name=" + field +"]");
         if ($field.length > 0)
